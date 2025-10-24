@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Một câu hỏi...</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+            overflow: hidden; /* Ẩn thanh cuộn nếu nút "No" bay ra xa */
+        }
+
+        /* Style chung cho cả 2 hộp nội dung */
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ---- PHẦN 1: GIỚI THIỆU ---- */
+        #intro-container p {
+            font-size: 22px; /* Cỡ chữ to hơn cho dễ đọc */
+            line-height: 1.6; /* Giãn dòng */
+            color: #555;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        #continue-btn {
+            background-color: #007bff; /* Màu xanh dương */
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 30px; /* Nút to, rõ ràng */
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        #continue-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* ---- PHẦN 2: CÂU HỎI ---- */
+        #question-container h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px; /* Khoảng cách giữa 2 nút */
+            position: relative;
+            height: 70px; /* Đảm bảo container có chiều cao */
+        }
+
+        /* Style chung cho nút Yes/No */
+        .buttons button {
+            width: 70px;  /* Đây là "ô vuông" */
+            height: 70px; /* Đây là "ô vuông" */
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 8px; 
+            cursor: pointer;
+            transition: all 0.2s ease-out; /* Hiệu ứng di chuyển mượt */
+        }
+
+        #yes-btn {
+            background-color: #4CAF50; /* Màu xanh lá */
+        }
+
+        #no-btn {
+            background-color: #f44336; /* Màu đỏ */
+            /* Đây là mấu chốt: */
+            position: absolute; /* Giúp nút "No" có thể di chuyển tự do */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="intro-container" class="container">
+    <p> Yến Trang à, <br> 
+        Anh có điều này muốn nói với em từ lâu rồi. Anh thật sự, thật sự xin lỗi em vì những lời anh đã nói hôm đó.
+        Anh đã phân vân mãi, không biết liệu em có đọc hết những dòng này không. Nhưng có lẽ đây là cách duy nhất để em có thể đọc được, vì tin nhắn anh gửi em đều không hồi âm.
+        Em biết không, từ trước đến giờ, mỗi khi có chuyện giữa cả hai, em đều gửi cho anh những dòng tin nhắn rất dài, chia sẻ với anh rất nhiều. Nhưng lần này, em lại im lặng. Sự im lặng của em thật nặng nề, nó làm anh có cảm giác như tim mình muốn nổ tung lên vậy.
+        Mấy hôm nay anh thiếu thiếu vắng lắm, cảm giác như không có em đường đi làm về nó nhạt nhẽo.
+        Thế ròi hôm nay, em gọi anh để chở con ci đi dạo, mặc dù không nói chuyện nhưng khi được gặp em anh đã vui lắmm, thật sự là vui lắm ý. Nên nếu em hỏi anh có hối hận không thì câu trả lời chắc chắn là có, hối hận vì hôm đó đang lẽ phải ôm em chứ không phải lớn tiếng rồi quay xe về .
+        Em biết anh mà, anh không giỏi văn nên chỉ viết được nhiêu đây thui, nên ấn tiếp tục để đọc tiếp nhen</p>
+        <button id="continue-btn">Tiếp tục</button>
+        
+    </div>
+
+    <div id="question-container" class="container" style="display: none;">
+        <h2>Tha lỗi cho anh nhé, anh biết lỗi rồi, quay lại với anh với ci với lu đi..</h2>
+        
+        <div class="buttons">
+            <button id="yes-btn">Dạ</button>
+            <button id="no-btn">Hong</button>
+        </div>
+    </div>
+
+    <script>
+        // Lấy các phần tử (element)
+        const introContainer = document.getElementById('intro-container');
+        const questionContainer = document.getElementById('question-container');
+        const continueBtn = document.getElementById('continue-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+
+        // --- Logic 1: Xử lý nút "Tiếp tục" ---
+        continueBtn.addEventListener('click', () => {
+            // Ẩn phần giới thiệu
+            introContainer.style.display = 'none';
+            
+            // Hiện phần câu hỏi
+            questionContainer.style.display = 'block';
+        });
+
+        // --- Logic 2: Xử lý nút "No" chạy trốn ---
+        function moveButton() {
+            // Lấy kích thước của cửa sổ trình duyệt
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+
+            // Lấy kích thước của nút
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+
+            // Tính toán vị trí ngẫu nhiên mới
+            let newTop = Math.random() * (viewportHeight - btnHeight);
+            let newLeft = Math.random() * (viewportWidth - btnWidth);
+
+            // Áp dụng vị trí mới cho nút "No"
+            noBtn.style.position = 'fixed'; // Chuyển sang fixed để nó di chuyển trên toàn màn hình
+            noBtn.style.top = newTop + 'px';
+            noBtn.style.left = newLeft + 'px';
+        }
+
+        // Khi chuột DI CHUYỂN VÀO nút "No"
+        noBtn.addEventListener('mouseover', moveButton);
+
+        // Khi CHẠM VÀO nút "No" (dành cho điện thoại)
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Ngăn hành vi click mặc định
+            moveButton();
+        });
+
+        // --- Logic 3: Xử lý khi nhấn nút "Yes" ---
+        yesBtn.addEventListener('click', () => {
+            // Lấy thẻ h2 bên trong phần câu hỏi
+            const h2 = questionContainer.querySelector('h2');
+            
+            // Thay đổi nội dung
+            h2.innerText = 'Cảm ơn em ạ ❤️';
+
+            // Ẩn cả 2 nút đi cho gọn
+            document.querySelector('.buttons').style.display = 'none';
+        });
+    </script>
+
+</body>
+</html>
